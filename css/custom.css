@@ -55,5 +55,5 @@ body {
 }
 
 .remove {
-  display: none;
+  display: none !important;
 }/*# sourceMappingURL=custom.css.map */

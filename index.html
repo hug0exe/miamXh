@@ -77,12 +77,10 @@
                 messages.appendChild(item);
                 window.scrollTo(0, document.body.scrollHeight);
             });
-
             socket.on('connect', function() {
             // Connected, let's sign-up for to receive messages for this room
                 socket.emit('room', room);
             });
-
             socket.on('message', function(data) {
                 console.log('Incoming message:', data);
             });
@@ -92,22 +90,18 @@
                     socket.emit("clicked");
                 });
             });
-
             socket.on('clicked', function() {
                 console.log('clicked');
                 socket.emit('adduser', prompt("What's your name?"));
-
             });
-            
-            
-
-            
-
+                        
+            btn.onclick = function(){
+                $('#button').addClass('remove');
+            }   
             // listener, whenever the server emits 'updatechat', this updates the chat body
             socket.on('updatechat', function (username, data) {
                 $('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
             });
-
             // listener, whenever the server emits 'updaterooms', this updates the room the client is in
             socket.on('updaterooms', function(rooms, current_room) {
                 $('#rooms').empty();
@@ -150,6 +144,20 @@
             $('#roomusers').append('+value+')
             });
             });
+
+            // var roster = io.sockets.clients('room1');
+            // var roster2 = io.sockets.clients('room2');
+            // var roster3 = io.sockets.clients('room3');
+                    
+            // roster.forEach(function(client) {
+            //     console.log('Username: ' + client.nickname);
+            // });
+            // roster2.forEach(function(client) {
+            //     console.log('Username: ' + client.nickname);
+            // });
+            // roster3.forEach(function(client) {
+            //     console.log('Username: ' + client.nickname);
+            // });
         </script>
     </body>
 </html>

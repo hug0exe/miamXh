@@ -35,6 +35,7 @@ let markerPerso = null
 let distanceTotal = ""
 
 let btn = document.getElementById('button');
+
 var request = new XMLHttpRequest()
 
 request.open('GET', 'https://opendata.paris.fr/api/records/1.0/search/?dataset=restaurants-casvp&q=&facet=code&facet=nom_restaurant&facet=types', true)
@@ -263,9 +264,7 @@ function calculTemps() {
     // console.log(tempsH);
 }
 
-btn.onclick = function(){
-    $('#button').addClass('remove');
-}   
+
 window.onload = function () {
     initMap()
 }
