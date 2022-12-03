@@ -4,13 +4,13 @@ const http = require("http")
 const server = http.createServer(app)
 const { Server } = require("socket.io")
 const io = new Server(server, {
-  cors: {
-    origin: "*",
-  },
+	cors: {
+    	origin: "*",
+	},
 })
 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html")
+	res.sendFile(__dirname + "/index.html")
 })
 
 var usernames = {}
@@ -25,21 +25,21 @@ var deleteinRoomFrist = null
 var deleteinRoomSecond = null
 
 io.on("connection", (socket) => {
-  console.log("a user connected")
-  socket.on("disconnect", () => {
+	console.log("a user connected")
+	socket.on("disconnect", () => {
     console.log("user disconnected")
-  })
-  socket.on("chat message", (msg) => {
+	})
+	socket.on("chat message", (msg) => {
     io.emit("chat message", msg)
-  })
-  socket.on("clicked", function () {
+	})
+	socket.on("clicked", function () {
     io.emit("clicked")
-  })
+	})
 })
 
 io.sockets.on("connection", function (socket) {
   // when the client emits 'adduser', this listens and executes
-  socket.on("adduser", function (username) {
+	socket.on("adduser", function (username) {
     // store the username in the socket session for this client
     socket.username = username
     // store the room name in the socket session for this client
@@ -52,16 +52,16 @@ io.sockets.on("connection", function (socket) {
     socket.emit("updatechat", "SERVER", "you have connected to room1")
     // echo to room 1 that a person has connected to their room
     socket.broadcast
-      .to("room1")
-      .emit("updatechat", "SERVER", username + " has connected to this room")
+    	.to("room1")
+    	.emit("updatechat", "SERVER", username + " has connected to this room")
     socket.emit("updaterooms", rooms, "room1")
-  })
+	})
 
   // when the client emits 'sendchat', this listens and executes
-  socket.on("sendchat", function (data) {
+	socket.on("sendchat", function (data) {
     // we tell the client to execute 'updatechat' with 2 parameters
-    io.sockets.in(socket.room).emit("updatechat", socket.username, data)
-  })
+    	io.sockets.in(socket.room).emit("updatechat", socket.username, data)
+	})
 
   socket.on("switchRoom", function (newroom) {
     // leave the current room (stored in session)
