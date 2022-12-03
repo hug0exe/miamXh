@@ -1,163 +1,221 @@
-
 <html>
-    <head>
-        <title>MiamXh</title>
-        <!-- Nous chargeons les fichiers CDN de Leaflet. Le CSS AVANT le JS -->
-        <link rel="stylesheet" href="./css/custom.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-        <link
-            rel="stylesheet"
-            href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
-            integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
-            crossorigin=""
-        />
-        <style type="text/css">
-            #map {
-            /* la carte DOIT avoir une hauteur sinon elle n'apparaît pas */
-            height: 400px;
-            }
-        </style>
-    </head>
-    
-    <body>
-        <div class="row">
-            <div class="col-md-4 text-center mt-3">
-                <h2>Liste de restaurant</h2>
-                <ul id="resto"></ul>
-            </div>
-            <div id="map" class="col-md-4">
-                <!-- Ici s'affichera la carte -->
-            </div>
-            <div class="col-md-3 text-center mt-3">
-                <div style="float:left;width:100px;border-right:1px solid black;height:300px;padding:10px;overflow:scroll-y;">
-                    <b>ROOMS</b>
-                    <div id="rooms"></div>
-                </div>
-                <div style="float:left;width:300px;overflow:scroll-y;padding:10px;">
-                    <div id="conversation"></div>
-                    <input id="data" style="width:200px;" />
-                    <input type="button" id="datasend" value="send" />
-                </div>
-                <button class="mt-3 btn btn-success" id="button">Cliques ici pour rejoindre une room</button>
-            </div>
+  <head>
+    <title>MiamXh</title>
+    <!-- Nous chargeons les fichiers CDN de Leaflet. Le CSS AVANT le JS -->
+    <link rel="stylesheet" href="./css/custom.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+      integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+      crossorigin=""
+    />
+    <style type="text/css">
+      #map {
+        /* la carte DOIT avoir une hauteur sinon elle n'apparaît pas */
+        height: 400px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="row">
+      <div class="col-md-4 text-center mt-3">
+        <h2>Liste de restaurant</h2>
+        <ul id="resto"></ul>
+      </div>
+      <div id="map" class="col-md-4">
+        <!-- Ici s'affichera la carte -->
+      </div>
+      <div class="col-md-3 text-center mt-3">
+        <div
+          style="
+            float: left;
+            width: 100px;
+            border-right: 1px solid black;
+            height: 300px;
+            padding: 10px;
+            overflow: scroll-y;
+          "
+        >
+          <b>ROOMS</b>
+          <div id="rooms"></div>
         </div>
-        <ul id="messages"></ul>
-        <form id="form" action="">
-            <input id="input" autocomplete="off" /><button>Send</button>
-        </form>
-        <!-- Fichiers Javascript -->
-        <script
-            src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
-            integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
-            crossorigin=""
-        ></script>
-        <script src="./front/main.js"></script>
-        <script src="https://cdn.socket.io/4.5.4/socket.io.min.js" integrity="sha384-/KNQL8Nu5gCHLqwqfQjA689Hhoqgi2S84SNUxC3roTe4EhJ9AfLkp8QiQcU8AMzI" crossorigin="anonymous"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-        <script>
-            var socket = io.connect('http://localhost:8080/');
+        <div
+          style="float: left; width: 300px; overflow: scroll-y; padding: 10px"
+        >
+          <div id="conversation"></div>
+          <input id="data" style="width: 200px" />
+          <input type="button" id="datasend" value="send" />
+        </div>
+        <button class="mt-3 btn btn-success" id="button">
+          Cliques ici pour rejoindre une room
+        </button>
+      </div>
+    </div>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+    <!-- Fichiers Javascript -->
+    <script
+      src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+      integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+      crossorigin=""
+    ></script>
+    <script src="./front/main.js"></script>
+    <script
+      src="https://cdn.socket.io/4.5.4/socket.io.min.js"
+      integrity="sha384-/KNQL8Nu5gCHLqwqfQjA689Hhoqgi2S84SNUxC3roTe4EhJ9AfLkp8QiQcU8AMzI"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <script>
+      var socket = io.connect("http://localhost:3000/")
 
-            var messages = document.getElementById('messages');
-            var form = document.getElementById('form');
-            var input = document.getElementById('input');
-            var room = "abc123";
-            
+      var messages = document.getElementById("messages")
+      var form = document.getElementById("form")
+      var input = document.getElementById("input")
+      var room = "abc123"
 
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                if (input.value) {
-                    socket.emit('chat message', input.value);
-                    input.value = '';
-                }
-            });
-            
-            socket.on('chat message', function(msg) {
-                var item = document.createElement('li');
-                item.textContent = msg;
-                messages.appendChild(item);
-                window.scrollTo(0, document.body.scrollHeight);
-            });
-            socket.on('connect', function() {
-            // Connected, let's sign-up for to receive messages for this room
-                socket.emit('room', room);
-            });
-            socket.on('message', function(data) {
-                console.log('Incoming message:', data);
-            });
-            
-            socket.on('connect', function() {
-                document.getElementById("button").addEventListener("click", function () {
-                    socket.emit("clicked");
-                });
-            });
-            socket.on('clicked', function() {
-                console.log('clicked');
-                socket.emit('adduser', prompt("What's your name?"));
-            });
-                        
-            btn.onclick = function(){
-                $('#button').addClass('remove');
-            }   
-            // listener, whenever the server emits 'updatechat', this updates the chat body
-            socket.on('updatechat', function (username, data) {
-                $('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
-            });
-            // listener, whenever the server emits 'updaterooms', this updates the room the client is in
-            socket.on('updaterooms', function(rooms, current_room) {
-                $('#rooms').empty();
-                $.each(rooms, function(key, value) {
-                    if(value == current_room){
-                        $('#rooms').append('<div>' + value + '</div>');
-                    }
-                    else {
-                        $('#rooms').append('<div><a href="#" onclick="switchRoom(\''+value+'\')">' + value + '</a></div>');
-                    }
-                });
-            });
+      form.addEventListener("submit", function (e) {
+        e.preventDefault()
+        if (input.value) {
+          socket.emit("chat message", input.value)
+          input.value = ""
+        }
+      })
 
-            function switchRoom(room){
-                socket.emit('switchRoom', room);
-            }
+      socket.on("chat message", function (msg) {
+        var item = document.createElement("li")
+        item.textContent = msg
+        messages.appendChild(item)
+        window.scrollTo(0, document.body.scrollHeight)
+      })
+      socket.on("connect", function () {
+        // Connected, let's sign-up for to receive messages for this room
+        socket.emit("room", room)
+      })
+      socket.on("message", function (data) {
+        console.log("Incoming message:", data)
+      })
 
-            // on load of page
-            $(function(){
-                // when the client clicks SEND
-                $('#datasend').click( function() {
-                    var message = $('#data').val();
-                    $('#data').val('');
-                    // tell server to execute 'sendchat' and send along one parameter
-                    socket.emit('sendchat', message);
-                });
+      socket.on("connect", function () {
+        document
+          .getElementById("button")
+          .addEventListener("click", function () {
+            socket.emit("clicked")
+          })
+      })
+      socket.on("clicked", function () {
+        console.log("clicked")
+        socket.emit("adduser", prompt("What's your name?"))
+      })
 
-                // when the client hits ENTER on their keyboard
-                $('#data').keypress(function(e) {
-                    if(e.which == 13) {
-                        $(this).blur();
-                        $('#datasend').focus().click();
-                    }
-                });
-            });
+      btn.onclick = function () {
+        $("#button").addClass("remove")
+      }
+      // listener, whenever the server emits 'updatechat', this updates the chat body
+      socket.on("updatechat", function (username, data) {
+        $("#conversation").append("<b>" + username + ":</b> " + data + "<br>")
+      })
+      // listener, whenever the server emits 'updaterooms', this updates the room the client is in
+      socket.on("updaterooms", function (rooms, current_room) {
+        $("#rooms").empty()
+        //const userDiv = $(".user")
+        // if (userDiv) {
+        //   userDiv.remove()
+        // }
+        // //console.log(usersInRoom)
+        // $.each(usersInRoom, function (key, value) {
+        //   $("#users").append('<div class="user">' + value + "</div>")
+        // })
+        $.each(rooms, function (key, value) {
+          if (value == current_room) {
+            $("#rooms").append("<div>" + value + "</div>")
+          } else {
+            $("#rooms").append(
+              '<div><a href="#" onclick="switchRoom(\'' +
+                value +
+                "')\">" +
+                value +
+                "</a></div>"
+            )
+          }
+        })
+      })
 
-            socket.on('updateroomusers', function(roomusers) {
-            $("#roomusers").empty();
-            $.each(roomusers, function (key, value) {
-            $('#roomusers').append('+value+')
-            });
-            });
+      function switchRoom(room) {
+        socket.emit("switchRoom", room)
+      }
 
-            // var roster = io.sockets.clients('room1');
-            // var roster2 = io.sockets.clients('room2');
-            // var roster3 = io.sockets.clients('room3');
-                    
-            // roster.forEach(function(client) {
-            //     console.log('Username: ' + client.nickname);
-            // });
-            // roster2.forEach(function(client) {
-            //     console.log('Username: ' + client.nickname);
-            // });
-            // roster3.forEach(function(client) {
-            //     console.log('Username: ' + client.nickname);
-            // });
-        </script>
-    </body>
+      socket.on("userRoomList", function (usersInRoom) {
+        const userDiv = $(".user")
+        if (userDiv) {
+          console.log(userDiv)
+          userDiv.remove()
+        }
+        console.log(usersInRoom)
+        usersInRoom.forEach((user) => {
+          $("#users").append('<div class="user">' + user + "</div>")
+        })
+      })
+
+      // que front
+      //   socket.on("usersList", function (username, isLeaving, room) {
+      //     if (isLeaving) {
+      //       $("#user:contains(" + username + ")").remove()
+      //       $("#user:contains(" + room + ")").remove()
+      //     } else {
+      //       $("#users").append('<div id="user">' + username + "</div>")
+      //       $("#users").append('<div id="user">' + room + "</div>")
+      //     }
+      //   })
+
+      // on load of page
+      $(function () {
+        // when the client clicks SEND
+        $("#datasend").click(function () {
+          var message = $("#data").val()
+          $("#data").val("")
+          // tell server to execute 'sendchat' and send along one parameter
+          socket.emit("sendchat", message)
+        })
+
+        // when the client hits ENTER on their keyboard
+        $("#data").keypress(function (e) {
+          if (e.which == 13) {
+            $(this).blur()
+            $("#datasend").focus().click()
+          }
+        })
+      })
+
+      socket.on("updateroomusers", function (roomusers) {
+        $("#roomusers").empty()
+        $.each(roomusers, function (key, value) {
+          $("#roomusers").append("+value+")
+        })
+      })
+
+      // var roster = io.sockets.clients('room1');
+      // var roster2 = io.sockets.clients('room2');
+      // var roster3 = io.sockets.clients('room3');
+
+      // roster.forEach(function(client) {
+      //     console.log('Username: ' + client.nickname);
+      // });
+      // roster2.forEach(function(client) {
+      //     console.log('Username: ' + client.nickname);
+      // });
+      // roster3.forEach(function(client) {
+      //     console.log('Username: ' + client.nickname);
+      // });
+    </script>
+  </body>
 </html>
