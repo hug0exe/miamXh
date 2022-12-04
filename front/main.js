@@ -20,10 +20,17 @@ let pointArrive = {
   lon: 2.3338596,
 }
 
+let newArray = []
+
+let myLat = null;
+let myLon = null;
+
+// console.log(myLat, myLon)
+
 let latResto = restos.Paris.lat
-let latPerso = persos.Arthur.lat
-let lonResto = restos.Paris.lon
-let lonPerso = persos.Arthur.lon
+let latPerso = null;
+let lonResto = restos.Paris.lon;
+let lonPerso = null;
 let latPa = pointArrive.lat
 let lonPa = pointArrive.lon
 
@@ -36,6 +43,52 @@ let distanceTotal = ""
 let btn = document.getElementById("button")
 
 var request = new XMLHttpRequest()
+var x = document.getElementById("demo");
+
+// function getLocation() {
+//     if (navigator.geolocation) {
+//        position = navigator.geolocation.getCurrentPosition(showPosition);
+//        console.log(position)
+//     } else { 
+//         x.innerHTML = "Geolocation is not supported by this browser.";
+//     }
+    
+// }
+
+//     function showPosition(position) {
+//     x.innerHTML = "Latitude: " + position.coords.latitude + 
+//     "<br>Longitude: " + position.coords.longitude;
+//     myLon = position.coords.longitude;
+//     myLat = position.coords.latitude;
+    
+//     console.log(myLon)
+//     lonPerso = myLon
+    
+// }
+// getLocation()
+
+
+function getLocation(callback) {
+    if (navigator.geolocation) {
+        var lat_lng = navigator.geolocation.getCurrentPosition(function(position){
+        console.log(position);
+          
+          user_position.lat = position.coords.latitude; 
+          user_position.lng = position.coords.longitude; 
+          callback(user_position);
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+getLocation(function(lat_lng){
+  console.log(lat_lng);
+  lignes()
+});
+let user_position = {};
+console.log(user_position);
+
+
 
 request.open(
   "GET",
@@ -71,9 +124,12 @@ request.onload = function () {
   //document.getElementById("resto").innerHTML = tab
   console.log(arrayResto)
   console.log(restos)
+
+
 }
 
 function initMap() {
+    getLocation();
   var icon = L.icon({
     iconUrl: "assets/blackPin.png",
     iconSize: [50, 50],
@@ -108,25 +164,39 @@ function initMap() {
     clickAndSelect()
   }
 
-  for (perso in persos) {
-    markerPerso = L.marker([persos[perso].lat, persos[perso].lon], {
-      icon: icon,
+//   for (perso in persos) {
+//     markerPerso = L.marker([myLat, myLon], {
+//       icon: icon,
+//       autoPan: true,
+//     }).addTo(macarte)
+//     markerPerso.bindPopup(perso)
+//   }
+navigator.geolocation.getCurrentPosition(position => {
+    const { coords: { latitude, longitude }} = position;
+    markerPerso = new L.marker([latitude, longitude], {
+      draggable: true,
       autoPan: true,
-    }).addTo(macarte)
-    markerPerso.bindPopup(perso)
-  }
-  markerPA = L.marker([pointArrive.lat, pointArrive.lon], {
-    icon: iconBlue,
-    draggable: true,
-    pan: true,
-  }).addTo(macarte)
+      icon : icon
+    }).addTo(macarte);
+    latPerso = markerPerso._latlng.lat;
+    lonPerso = markerPerso._latlng.lng;
+  
+    console.log(markerPerso._latlng.lat, markerPerso._latlng.lng);
+  })
 
-  distancePersoResto()
-  distanceRestoPA()
-  dragAndDrop()
-  clickAndSelect()
-  lignes()
-  clickRestoList()
+  
+  markerPA = L.marker([pointArrive.lat, pointArrive.lon], {
+      icon: iconBlue,
+      draggable: true,
+      pan: true,
+    }).addTo(macarte)
+    
+    distancePersoResto()
+    distanceRestoPA()
+    dragAndDrop()
+    clickAndSelect()
+    
+    clickRestoList()
 }
 
 function dragAndDrop() {
@@ -158,10 +228,12 @@ function clickAndSelect() {
   })
 }
 
+console.log('perso: ', latPerso)
 function distancePersoResto(latResto, latPerso, lonResto, lonPerso) {
   // The math module contains a function
   // named toRadians which converts from
   // degrees to radians.
+  console.log('ligne' ,latPerso)
   lonResto = (lonResto * Math.PI) / 180
   lonPerso = (lonPerso * Math.PI) / 180
   latResto = (latResto * Math.PI) / 180
@@ -202,11 +274,13 @@ function distanceRestoPA(latResto, latPa, lonResto, lonPa) {
 }
 //array des 3 position
 function lignes() {
-  var pointsForJson = [
-    [latPa, lonPa],
-    [latResto, lonResto],
-    [latPerso, lonPerso],
-  ]
+    let pointsForJson = [
+        [latPa, lonPa],
+        [latResto, lonResto],
+        [user_position.lat, user_position.lng],
+      ]
+//   
+  console.log(pointsForJson)
   pointsForJson.forEach(function (lngLat) {
     L.marker(lngLatToLatLng(lngLat)).addTo(macarte)
   })
@@ -269,7 +343,12 @@ function clickRestoList() {
 }
 
 window.onload = function () {
-  initMap()
+    initMap()
 }
 
 request.send()
+
+
+
+
+

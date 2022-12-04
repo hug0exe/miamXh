@@ -59,6 +59,7 @@
         <button class="mt-3 btn btn-success" id="button">
           Cliques ici pour rejoindre une room
         </button>
+        <p id="demo"></p>
       </div>
     </div>
 
@@ -74,9 +75,12 @@
       integrity="sha384-/KNQL8Nu5gCHLqwqfQjA689Hhoqgi2S84SNUxC3roTe4EhJ9AfLkp8QiQcU8AMzI"
       crossorigin="anonymous"
     ></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <script
+  src="https://code.jquery.com/jquery-3.6.1.min.js"
+  integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+  crossorigin="anonymous"></script>
     <script>
-      var socket = io.connect("http://localhost:3000/")
+      var socket = io.connect("http://localhost:8080/")
 
       var messages = document.getElementById("messages")
       var form = document.getElementById("form")
@@ -127,6 +131,7 @@
       // listener, whenever the server emits 'updaterooms', this updates the room the client is in
       socket.on("updaterooms", function (rooms, current_room) {
         $("#rooms").empty()
+
         //const userDiv = $(".user")
         // if (userDiv) {
         //   userDiv.remove()
@@ -135,6 +140,7 @@
         // $.each(usersInRoom, function (key, value) {
         //   $("#users").append('<div class="user">' + value + "</div>")
         // })
+        
         $.each(rooms, function (key, value) {
           if (value == current_room) {
             $("#rooms").append("<div>" + value + "</div>")
@@ -202,6 +208,8 @@
           $("#roomusers").append("+value+")
         })
       })
+
+      
 
       // var roster = io.sockets.clients('room1');
       // var roster2 = io.sockets.clients('room2');
