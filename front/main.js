@@ -45,18 +45,16 @@ request.open(
 request.onload = function () {
   // Begin accessing JSON data here
   let data = JSON.parse(this.response)
-  let tab = ``
+  //let tab = ``
 
   if (request.status >= 200 && request.status < 400) {
     data.records.forEach((resto) => {
-      // console.log(resto)
       if (resto.geometry !== undefined) {
         let coord = resto.geometry.coordinates
-        tab += `<li class="mt-3 card p-2"> ${resto.fields["nom_restaurant"]} <br>
-                ${resto.fields["adresse"]} <br>
-                ${coord[0]} / ${coord[1]}</li>
-                
-                `
+        // tab += `<li class="mt-3 card p-2" id="leresto" onclick="clickAndSelect()"> ${resto.fields["nom_restaurant"]} <br>
+        //         ${resto.fields["adresse"]} <br>
+        //         ${coord[0]} / ${coord[1]}</li>
+        //         `
         let obj = {}
         let name = resto.fields["nom_restaurant"]
         obj["name"] = name
@@ -64,15 +62,13 @@ request.onload = function () {
         obj["lon"] = lon
         let lat = coord[1]
         obj["lat"] = lat
-        // console.log(obj);
-        // console.log(arrayResto);
         arrayResto.push(obj)
       }
     })
   } else {
     console.log("error")
   }
-  document.getElementById("resto").innerHTML = tab
+  //document.getElementById("resto").innerHTML = tab
   console.log(arrayResto)
   console.log(restos)
 }
@@ -94,15 +90,24 @@ function initMap() {
     minZoom: 1,
     maxZoom: 20,
   }).addTo(macarte)
-  for (resto in restos) {
-    console.log(resto[1])
-    markerResto = L.marker([restos[resto].lat, restos[resto].lon], {
+
+  for (i = 0; i < arrayResto.length; i++) {
+    markerResto = L.marker([arrayResto[i].lat, arrayResto[i].lon], {
       autoPan: true,
     }).addTo(macarte)
+    markerResto.bindPopup(arrayResto[i].name)
+
+    $("#resto").append(
+      "<li class='mt-3 card p-2' id='resto" +
+        [i] +
+        "'> " +
+        arrayResto[i].name +
+        " <br>"
+    )
+
     clickAndSelect()
-    markerResto.bindPopup(resto)
-    console.log("Resto:", resto)
   }
+
   for (perso in persos) {
     markerPerso = L.marker([persos[perso].lat, persos[perso].lon], {
       icon: icon,
@@ -121,6 +126,7 @@ function initMap() {
   dragAndDrop()
   clickAndSelect()
   lignes()
+  clickRestoList()
 }
 
 function dragAndDrop() {
@@ -151,6 +157,7 @@ function clickAndSelect() {
     lignes()
   })
 }
+
 function distancePersoResto(latResto, latPerso, lonResto, lonPerso) {
   // The math module contains a function
   // named toRadians which converts from
@@ -223,7 +230,7 @@ function calculDistanceTotal() {
   distanceTotal =
     distancePersoResto(latResto, latPerso, lonResto, lonPerso) +
     distanceRestoPA(latResto, latPa, lonResto, lonPa)
-  console.log(distanceTotal + " K.M")
+  //console.log(distanceTotal + " K.M")
 }
 //Calcul Temps
 let tempsH = ""
@@ -238,7 +245,27 @@ function calculTemps() {
     var min = tempsMin % 60
     tempsH = heure + " h " + min + " min "
   }
-  // console.log(tempsH);
+  console.log(tempsH)
+}
+
+function clickRestoList() {
+  for (i = 0; i < arrayResto.length; i++) {
+    let restoId = "resto" + i
+    let item = i
+    $("#" + restoId).click("click", function () {
+      let name = arrayResto[item].name
+      latResto = arrayResto[item].lat
+      lonResto = arrayResto[item].lon
+
+      console.log(name + ", " + latResto + ", " + lonResto)
+      macarte.removeLayer(polyline)
+      distancePersoResto()
+      distanceRestoPA()
+      calculDistanceTotal()
+      calculTemps()
+      lignes()
+    })
+  }
 }
 
 window.onload = function () {

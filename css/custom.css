@@ -57,3 +57,7 @@ body {
 .remove {
   display: none !important;
 }/*# sourceMappingURL=custom.css.map */
+
+#leresto{
+  cursor: pointer;
+}
